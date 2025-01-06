@@ -5,6 +5,9 @@
         <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Create your account</h2>
       </div>
       <form class="mt-8 space-y-6" @submit.prevent="handleRegister">
+        <div v-if="message" class="p-4 text-center rounded-md" :class="messageType">
+          {{ message }}
+        </div>
         <div class="rounded-md shadow-sm -space-y-px">
           <div>
             <label for="name" class="sr-only">Full name</label>
@@ -46,16 +49,16 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { loginUser } from '@/api/user';
+import { registerUser } from '@/api/user';
 
-const username = ref('');
+const name = ref('');
 const email = ref('');
 const password = ref('');
 const message = ref(''); // To display success or error messages
 const messageType = ref(''); // To style the message
 const router = useRouter(); // Initialize the router
 
-const handleLogin = async () => {
+const handleRegister = async () => {
   try {
     const response = await registerUser(name.value, email.value, password.value);
     console.log('Register successful:', response);

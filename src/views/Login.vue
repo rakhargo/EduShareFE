@@ -44,6 +44,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { loginUser } from '@/api/user';
+import { loginResponse } from '@/api/user';
 
 const email = ref('');
 const password = ref('');
@@ -56,11 +57,12 @@ const handleLogin = async () => {
     const response = await loginUser(email.value, password.value);
     console.log('Login successful:', response);
 
-    // Show a success message
-    message.value = 'Login successful!';
-    messageType.value = 'bg-green-100 text-green-700'; // Success style
+    // Save the id and access_token to sessionStorage
+    loginResponse(response);
 
-    // Redirect to Home.vue after a short delay
+    // Redirect to a protected route or show a success message
+    message.value = 'Login successful! Redirecting...';
+    messageType.value = 'bg-green-100 text-green-700';
     setTimeout(() => {
       router.push({ name: 'Home' });
     }, 1500);
@@ -69,7 +71,8 @@ const handleLogin = async () => {
 
     // Show an error message
     message.value = 'Login failed: ' + (error.message || 'Unknown error');
-    messageType.value = 'bg-red-100 text-red-700'; // Error style
+    messageType.value = 'bg-red-100 text-red-700';
   }
 };
+
 </script>

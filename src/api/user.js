@@ -17,3 +17,14 @@ export const registerUser = async (username, email, password) => {
     throw error.response?.data || error.message;
   }
 };
+
+export const loginResponse = (response) => {
+  const { id, access_token, token_type } = response;
+
+  // Save the id and access_token in sessionStorage
+  sessionStorage.setItem('userId', id);
+  sessionStorage.setItem('accessToken', access_token);
+  sessionStorage.setItem('tokenType', token_type);
+
+  console.log('ID and access token saved to sessionStorage.');
+};
