@@ -44,18 +44,36 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { loginUser } from '@/api/user';
 
-const name = ref('')
-const email = ref('')
-const password = ref('')
+const username = ref('');
+const email = ref('');
+const password = ref('');
+const message = ref(''); // To display success or error messages
+const messageType = ref(''); // To style the message
+const router = useRouter(); // Initialize the router
 
-const handleRegister = () => {
-  // Handle registration logic here
-  console.log('Register attempt:', { 
-    name: name.value,
-    email: email.value, 
-    password: password.value 
-  })
-}
+const handleLogin = async () => {
+  try {
+    const response = await registerUser(name.value, email.value, password.value);
+    console.log('Register successful:', response);
+
+    // Show a success message
+    message.value = 'Register successful! Redirecting to login page...';
+    messageType.value = 'bg-green-100 text-green-700'; // Success style
+
+    // Redirect to Home.vue after a short delay
+    setTimeout(() => {
+      router.push({ name: 'Login' });
+    }, 1500);
+  } catch (error) {
+    console.error('Login failed:', error);
+
+    // Show an error message
+    message.value = 'Login failed: ' + (error.message || 'Unknown error');
+    messageType.value = 'bg-red-100 text-red-700'; // Error style
+  }
+};
 </script>

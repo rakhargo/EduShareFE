@@ -5,10 +5,13 @@
         <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign in to your account</h2>
       </div>
       <form class="mt-8 space-y-6" @submit.prevent="handleLogin">
+        <div v-if="message" class="p-4 text-center rounded-md" :class="messageType">
+          {{ message }}
+        </div>
         <div class="rounded-md shadow-sm -space-y-px">
           <div>
             <label for="email" class="sr-only">Email address</label>
-            <input id="email" v-model="email" type="email" required
+            <input id="email" v-model="email" type="text" required
                    class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                    placeholder="Email address">
           </div>
@@ -38,13 +41,35 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { loginUser } from '@/api/user';
 
-const email = ref('')
-const password = ref('')
+const email = ref('');
+const password = ref('');
+const message = ref(''); // To display success or error messages
+const messageType = ref(''); // To style the message
+const router = useRouter(); // Initialize the router
 
-const handleLogin = () => {
-  // Handle login logic here
-  console.log('Login attempt:', { email: email.value, password: password.value })
-}
+const handleLogin = async () => {
+  try {
+    const response = await loginUser(email.value, password.value);
+    console.log('Login successful:', response);
+
+    // Show a success message
+    message.value = 'Login successful!';
+    messageType.value = 'bg-green-100 text-green-700'; // Success style
+
+    // Redirect to Home.vue after a short delay
+    setTimeout(() => {
+      router.push({ name: 'Home' });
+    }, 1500);
+  } catch (error) {
+    console.error('Login failed:', error);
+
+    // Show an error message
+    message.value = 'Login failed: ' + (error.message || 'Unknown error');
+    messageType.value = 'bg-red-100 text-red-700'; // Error style
+  }
+};
 </script>
