@@ -23,13 +23,27 @@
               </template>
               <template v-else>
                 <div class="flex items-center space-x-4">
-                  <span class="text-sm text-gray-500">12 points</span>
-                  <router-link to="/profile" class="flex items-center space-x-2 nav-link">
-                    <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                      <span class="text-sm font-medium text-blue-600">JD</span>
+                  <span class="text-sm text-gray-500">{{ userPoints }} points</span>
+                  <div class="relative">
+                    <button @click="toggleProfileMenu" class="flex items-center space-x-2 nav-link">
+                      <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                        <span class="text-sm font-medium text-blue-600">{{ userInitials }}</span>
+                      </div>
+                    </button>
+                    <!-- Profile Dropdown -->
+                    <div v-if="showProfileMenu" 
+                         class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 profile-menu">
+                      <div class="py-1">
+                        <router-link to="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                          My Profile
+                        </router-link>
+                        <button @click="handleLogout" 
+                                class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                          Sign out
+                        </button>
+                      </div>
                     </div>
-                    <span class="hidden md:inline">Profile</span>
-                  </router-link>
+                  </div>
                 </div>
               </template>
             </div>
@@ -43,54 +57,46 @@
     </main>
 
     <footer class="bg-white border-t mt-12">
-      <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-          <div>
-            <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">About</h3>
-            <ul class="mt-4 space-y-4">
-              <li><a href="#" class="text-base text-gray-500 hover:text-gray-900">About Us</a></li>
-              <li><a href="#" class="text-base text-gray-500 hover:text-gray-900">Careers</a></li>
-              <li><a href="#" class="text-base text-gray-500 hover:text-gray-900">Press</a></li>
-            </ul>
-          </div>
-          <div>
-            <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">Support</h3>
-            <ul class="mt-4 space-y-4">
-              <li><a href="#" class="text-base text-gray-500 hover:text-gray-900">Help Center</a></li>
-              <li><a href="#" class="text-base text-gray-500 hover:text-gray-900">Safety Center</a></li>
-              <li><a href="#" class="text-base text-gray-500 hover:text-gray-900">Community Guidelines</a></li>
-            </ul>
-          </div>
-          <div>
-            <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">Legal</h3>
-            <ul class="mt-4 space-y-4">
-              <li><a href="#" class="text-base text-gray-500 hover:text-gray-900">Privacy Policy</a></li>
-              <li><a href="#" class="text-base text-gray-500 hover:text-gray-900">Terms of Service</a></li>
-              <li><a href="#" class="text-base text-gray-500 hover:text-gray-900">Cookie Policy</a></li>
-            </ul>
-          </div>
-          <div>
-            <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">Connect</h3>
-            <ul class="mt-4 space-y-4">
-              <li><a href="#" class="text-base text-gray-500 hover:text-gray-900">Twitter</a></li>
-              <li><a href="#" class="text-base text-gray-500 hover:text-gray-900">Facebook</a></li>
-              <li><a href="#" class="text-base text-gray-500 hover:text-gray-900">Instagram</a></li>
-            </ul>
-          </div>
-        </div>
-        <div class="mt-8 border-t border-gray-200 pt-8">
-          <p class="text-base text-gray-400 text-center">
-            © 2024 EduShare. All rights reserved.
-          </p>
-        </div>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-gray-500">
+        &copy; 2025 Brainly Clone. All rights reserved.
       </div>
     </footer>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-const isAuthenticated = ref(false)
+import { ref, onMounted, onUnmounted } from 'vue'
+
+const showProfileMenu = ref(true)
+const isAuthenticated = ref(true) // Simulate authentication status
+const userPoints = ref(120) // Simulate user points
+const userInitials = ref('JD') // Simulate user initials
+
+const toggleProfileMenu = () => {
+  showProfileMenu.value = !showProfileMenu.value
+}
+
+const handleLogout = () => {
+  // Simulate logout action
+  isAuthenticated.value = false
+  showProfileMenu.value = false
+  console.log('User logged out')
+}
+
+// Close profile menu when clicking outside
+const closeProfileMenu = (e) => {
+  if (showProfileMenu.value && !e.target.closest('.profile-menu')) {
+    showProfileMenu.value = false
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('click', closeProfileMenu)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', closeProfileMenu)
+})
 </script>
 
 <style>
