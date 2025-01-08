@@ -77,41 +77,40 @@
       </div>
 
       <div class="grid gap-6">
-        <div v-for="question in questions" :key="question.id" 
-             class="bg-white shadow rounded-lg p-6 hover:shadow-md transition-shadow border border-gray-100">
+        <div v-for="question in questions" :key="question.id" class="bg-white shadow rounded-lg p-6 hover:shadow-md transition-shadow border border-gray-100">
+          <router-link :to="'/question/' + question.id" class="hover:text-blue-600">
           <div class="flex items-start justify-between">
             <div>
               <h3 class="text-lg font-medium text-gray-900">
-                <router-link :to="'/question/' + question.id" class="hover:text-blue-600">
                   {{ question.title }}
-                </router-link>
               </h3>
               <p class="mt-2 text-gray-600 line-clamp-2">{{ question.content }}</p>
             </div>
             <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-              {{ question.subject }}
+              <!-- {{ question.subject }} -->
             </span>
           </div>
           <div class="mt-4 flex items-center justify-between text-sm text-gray-500">
             <div class="flex items-center space-x-4">
               <span class="flex items-center">
                 <span class="text-green-500 mr-1">✓</span>
-                {{ question.answers }} answers
+                <!-- {{ question.answers }} answers -->
               </span>
               <span class="flex items-center">
                 <span class="text-blue-500 mr-1">👁</span>
-                {{ question.views }} views
+                <!-- {{ question.views }} views -->
               </span>
             </div>
             <div class="flex items-center">
               <span class="inline-flex items-center space-x-2">
                 <span class="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center">
-                  {{ question.author[0] }}
+                  <!-- {{ question.author[0] }} -->
                 </span>
-                <span>{{ question.author }}</span>
+                <!-- <span>{{ question.author }}</span> -->
               </span>
             </div>
           </div>
+        </router-link>
         </div>
       </div>
     </div>
@@ -124,8 +123,11 @@ import { ref } from 'vue'
 import { onMounted } from 'vue';
 import NavBarComponent from '../components/NavBarComponent.vue';
 import FooterComponent from '../components/FooterComponent.vue';
+import { fetchAllQuestion } from '@/api/question';
 
-onMounted(() => {
+onMounted( async () => {
+  questions.value = await fetchAllQuestion();
+
   // Check if the page has already been refreshed
   if (!sessionStorage.getItem('hasRefreshed')) {
     // Set the flag to indicate the page has been refreshed
@@ -151,36 +153,8 @@ const subjects = ref([
   { name: 'Computer Science', icon: '💻', count: '11.2K' },
   { name: 'Languages', icon: '🗣', count: '6.8K' },
 ])
+const questions = ref([])
 
-const questions = ref([
-  {
-    id: 1,
-    title: 'How do I solve this quadratic equation?',
-    content: 'I\'m having trouble solving x² + 5x + 6 = 0. Can someone help me understand the steps?',
-    subject: 'Mathematics',
-    answers: 3,
-    views: 45,
-    author: 'student123'
-  },
-  {
-    id: 2,
-    title: 'What is the difference between mitosis and meiosis?',
-    content: 'I need help understanding the key differences between these two cell division processes.',
-    subject: 'Biology',
-    answers: 5,
-    views: 72,
-    author: 'bioLearner'
-  },
-  {
-    id: 3,
-    title: 'Help with Newton\'s Third Law application',
-    content: 'Working on a physics problem involving forces, need help applying Newton\'s Third Law.',
-    subject: 'Physics',
-    answers: 2,
-    views: 38,
-    author: 'physicsStudent'
-  }
-])
 </script>
 
 <style scoped>
