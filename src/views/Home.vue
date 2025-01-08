@@ -33,7 +33,7 @@
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           <div v-for="subject in subjects" :key="subject.name" 
                class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-               :class="{'bg-blue-100': selectedSubject === subject.name, 'border-2 border-blue-500': selectedSubject === subject.name}"
+               :class="{'bg-blue-100': selectedSubjects.includes(subject.name), 'border-2 border-blue-500': selectedSubjects.includes(subject.name)}"
                >
             <div @click="handleFilterClick(subject.name)">
               <div class="text-2xl mb-2" v-html="subject.icon"></div>
@@ -51,14 +51,6 @@
         <div>
           <h2 class="text-3xl font-bold text-gray-900">Pertanyaan Terbaru</h2>
           <p class="mt-2 text-gray-600">Bantu menjawab pertanyaan orang lain</p>
-        </div>
-        <div class="flex gap-4">
-          <select v-model="selectedSubject" class="rounded-md border-gray-300">
-            <option value="">Semua</option>
-            <option v-for="subject in subjects" :key="subject.name" :value="subject.name">
-              {{ subject.name }}
-            </option>
-          </select>
         </div>
       </div>
 
@@ -128,7 +120,7 @@ onMounted( async () => {
   }
 });
 
-const selectedSubject = ref('')
+const selectedSubjects = ref([])
 
 const subjects = ref([
   { name: 'Matematika', icon: '📐', count: '15.2K' },
@@ -143,16 +135,20 @@ const subjects = ref([
 const questions = ref([])
 
 const filteredQuestions = computed(() => {
-  if (!selectedSubject.value) {
+  if (selectedSubjects.value.length === 0) {
     return questions.value;
   }
   return questions.value.filter(question =>
-    question.tags.includes(selectedSubject.value)
+    question.tags.some(tag => selectedSubjects.value.includes(tag))
   );
 });
 
 const handleFilterClick = (subjectName) => {
-  selectedSubject.value = subjectName;
+  if (selectedSubjects.value.includes(subjectName)) {
+    selectedSubjects.value = selectedSubjects.value.filter(subject => subject !== subjectName);
+  } else {
+    selectedSubjects.value.push(subjectName);
+  }
 };
 
 </script>
