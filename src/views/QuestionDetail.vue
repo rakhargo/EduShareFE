@@ -16,7 +16,7 @@
           {{ question.content }}  
         </p>  
         <div class="mt-4 flex items-center text-sm text-gray-500">  
-          <span>Asked by {{ question.authorId }}</span>  
+          <span>Ditanyakan Oleh {{ question.authorId }}</span>  
           <span class="mx-2">•</span>  
           <span>{{ question.createdAt }}</span>  
         </div>  
@@ -30,7 +30,7 @@
   
       <!-- Answers -->  
       <div class="mt-8">  
-        <h2 class="text-xl font-bold text-gray-900 mb-4" v-if="!isLoading && question">{{ question.answers.length }} Answers</h2>  
+        <h2 class="text-xl font-bold text-gray-900 mb-4" v-if="!isLoading && question">{{ question.answers.length }} Jawaban</h2>  
           
         <div v-if="!isLoading && question.answers.length > 0">  
           <div v-for="answer in question.answers" :key="answer.id" class="border-b last:border-0 py-6">  
@@ -45,27 +45,26 @@
           </div>  
         </div>  
         <div v-else-if="!isLoading">  
-          <p class="text-gray-600">No answers available.</p>  
+          <p class="text-gray-600">Belum ada jawaban.</p>  
         </div>  
       </div>  
   
       <!-- Add Answer -->  
-      <div class="mt-8">  
-        <h3 class="text-lg font-medium text-gray-900">Your Answer</h3>  
+      <div class="mt-8" v-if="isAuthenticated">  
+        <h3 class="text-lg font-medium text-gray-900">Jawaban Anda</h3>  
         <form @submit.prevent="handleSubmitAnswer" class="mt-4">  
           <textarea v-model="content"  
                     rows="4"  
                     class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"  
-                    placeholder="Write your answer here..."></textarea>  
+                    placeholder="Tulis jawaban Anda di sini..."></textarea>  
           <button type="submit"  
                   class="mt-4 inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">  
-            Post Answer  
+            Kirim Jawaban
           </button>  
         </form>  
       </div>  
     </div>  
   </div>  
-  <FooterComponent />  
 </template>  
   
 <script setup>  
@@ -83,6 +82,12 @@ const content = ref('');
 const userId = sessionStorage.getItem('userId');  
 const questionId = route.params.id;  
 const isLoading = ref(true); // Loading state  
+
+const isAuthenticated = ref(false)
+
+if (sessionStorage.getItem('accessToken')) {
+  isAuthenticated.value = true;
+}
   
 onMounted(async () => {  
   try {  

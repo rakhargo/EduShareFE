@@ -9,9 +9,9 @@
                 <span class="text-2xl font-bold text-blue-600">EduShare</span>
               </router-link>
             </div>
-            <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-              <router-link to="/" class="nav-link">Home</router-link>
-              <router-link to="/ask" class="nav-link">Ask Question</router-link>
+            <div v-if="isAuthenticated" class="hidden sm:ml-6 sm:flex sm:space-x-8">
+              <!-- <router-link to="/" class="nav-link">Beranda</router-link> -->
+              <router-link to="/ask" class="nav-link">Tanya Sekarang</router-link>
               <router-link to="/dashboard" class="nav-link">Dashboard</router-link>
             </div>
           </div>
@@ -23,7 +23,7 @@
               </template>
               <template v-else>
                 <div class="flex items-center space-x-4">
-                  <span class="text-sm text-gray-500">{{ userPoints }} points</span>
+                  <span class="text-sm text-gray-500">{{ userPoints }} point</span>
                   <div class="relative">
                     <button 
                       @click="toggleProfileMenu" 
@@ -36,11 +36,11 @@
                          class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 profile-menu">
                       <div class="py-1">
                         <router-link to="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                          My Profile
+                          Profil Saya
                         </router-link>
                         <button @click="handleLogout" 
                                 class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                          Sign out
+                          Keluar
                         </button>
                       </div>
                     </div>
@@ -66,23 +66,24 @@
     const userInitials = ref('JD') // Simulate user initials
 
     if (sessionStorage.getItem('accessToken')) {
-    isAuthenticated.value = true;
+      isAuthenticated.value = true;
     }
 
     const toggleProfileMenu = () => {
-    showProfileMenu.value = !showProfileMenu.value
+      showProfileMenu.value = !showProfileMenu.value
     }
 
     const handleLogout = () => {
-    // Clear sessionStorage
-    sessionStorage.clear();
-    isAuthenticated.value = false;
-    showProfileMenu.value = false;
+      // Clear sessionStorage
+      sessionStorage.clear();
+      isAuthenticated.value = false;
+      showProfileMenu.value = false;
 
-    console.log('User logged out');
+      console.log('User logged out');
 
-    // Redirect to the login page
-    router.push({ name: 'Login' });
+      // Redirect to the login page
+      router.push('/');
+      location.reload();
     }
 
     // Close profile menu when clicking outside

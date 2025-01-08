@@ -4,7 +4,7 @@
       <div class="bg-white p-6 rounded-lg shadow-md">
         <div class="flex items-center gap-2 mb-6">
           <BarChart3 class="w-5 h-5 text-blue-600" />
-          <h2 class="text-xl font-semibold">Activity Distribution</h2>
+          <h2 class="text-xl font-semibold">Distribusi Aktivitas</h2>
         </div>
         <div class="relative h-64 flex flex-col items-center">
           <!-- Y-axis labels -->
@@ -36,11 +36,11 @@
         <div class="flex justify-around mt-4">
           <div class="flex items-center">
             <span class="w-4 h-4 bg-blue-500 mr-2"></span>
-            <span class="text-sm font-medium text-gray-600">Questions</span>
+            <span class="text-sm font-medium text-gray-600">Pertanyaan</span>
           </div>
           <div class="flex items-center">
             <span class="w-4 h-4 bg-green-500 mr-2"></span>
-            <span class="text-sm font-medium text-gray-600">Answers</span>
+            <span class="text-sm font-medium text-gray-600">Jawaban</span>
           </div>
         </div>
       </div>
@@ -49,7 +49,7 @@
       <div class="bg-white p-6 rounded-lg shadow-md">
         <div class="flex items-center gap-2 mb-4">
           <PieChart class="w-5 h-5 text-blue-600" />
-          <h2 class="text-xl font-semibold">Activity Ratio</h2>
+          <h2 class="text-xl font-semibold">Rasio Aktivitas</h2>
         </div>
         <div class="flex items-center gap-8">
           <div class="relative w-48 h-48">
@@ -92,14 +92,14 @@
             <div class="flex items-center gap-2">
               <div class="w-4 h-4 bg-blue-500 rounded"></div>
               <div class="text-sm">
-                <span class="font-medium">Questions</span>
+                <span class="font-medium">Pertanyaan</span>
                 <span class="text-gray-500 ml-2">{{ percentages.questions }}%</span>
               </div>
             </div>
             <div class="flex items-center gap-2">
               <div class="w-4 h-4 bg-green-500 rounded"></div>
               <div class="text-sm">
-                <span class="font-medium">Answers</span>
+                <span class="font-medium">Jawaban</span>
                 <span class="text-gray-500 ml-2">{{ percentages.answers }}%</span>
               </div>
             </div>

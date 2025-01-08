@@ -7,53 +7,39 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div class="text-center">
           <h1 class="text-4xl font-extrabold sm:text-5xl md:text-6xl">
-            Get Help With Your Studies
+            Butuh Bantuan Belajar?
           </h1>
           <p class="mt-3 max-w-md mx-auto text-xl text-blue-100 sm:text-2xl md:mt-5 md:max-w-3xl">
-            Join our community of students and experts. Get answers to your questions in minutes!
+            Gabung dengan komunitas pelajar dan ahli kami. Temukan jawaban atas pertanyaan Anda dengan cepat!
           </p>
           <div class="mt-10 flex justify-center gap-4">
-            <router-link to="/ask" class="px-8 py-3 border border-transparent text-lg font-medium rounded-md text-blue-700 bg-white hover:bg-blue-50 md:py-4 md:text-xl md:px-10">
-              Ask a Question
+            <router-link v-if="isAuthenticated" to="/ask" class="px-8 py-3 border border-transparent text-lg font-medium rounded-md text-blue-700 bg-white hover:bg-blue-50 md:py-4 md:text-xl md:px-10">
+              Tanya Sekarang
             </router-link>
-            <router-link to="/register" class="px-8 py-3 border border-white text-lg font-medium rounded-md text-white hover:bg-blue-700 md:py-4 md:text-xl md:px-10">
-              Join Now
+            <router-link v-else to="/register" class="px-8 py-3 border border-white text-lg font-medium rounded-md text-white hover:bg-blue-700 md:py-4 md:text-xl md:px-10">
+              Gabung Sekarang
             </router-link>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Stats Section -->
-    <div class="bg-white py-12">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-3 gap-8 text-center">
-          <div class="bg-blue-50 rounded-lg p-6">
-            <div class="text-4xl font-bold text-blue-600">1M+</div>
-            <div class="mt-2 text-sm text-gray-600">Questions Answered</div>
-          </div>
-          <div class="bg-blue-50 rounded-lg p-6">
-            <div class="text-4xl font-bold text-blue-600">500K+</div>
-            <div class="mt-2 text-sm text-gray-600">Active Students</div>
-          </div>
-          <div class="bg-blue-50 rounded-lg p-6">
-            <div class="text-4xl font-bold text-blue-600">10K+</div>
-            <div class="mt-2 text-sm text-gray-600">Expert Tutors</div>
-          </div>
-        </div>
-      </div>
-    </div>
+    
 
     <!-- Subject Categories -->
     <div class="bg-gray-50 py-12">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-3xl font-bold text-gray-900 text-center mb-8">Popular Subjects</h2>
+        <h2 class="text-3xl font-bold text-gray-900 text-center mb-8">Bahasan Terpopuler</h2>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           <div v-for="subject in subjects" :key="subject.name" 
-               class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer">
-            <div class="text-2xl mb-2" v-html="subject.icon"></div>
-            <h3 class="font-medium text-gray-900">{{ subject.name }}</h3>
-            <p class="text-sm text-gray-500">{{ subject.count }} questions</p>
+               class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+               :class="{'bg-blue-100': selectedSubjects.includes(subject.name), 'border-2 border-blue-500': selectedSubjects.includes(subject.name)}"
+               >
+            <div @click="handleFilterClick(subject.name)">
+              <div class="text-2xl mb-2" v-html="subject.icon"></div>
+              <h3 class="font-medium text-gray-900">{{ subject.name }}</h3>
+              <p class="text-sm text-gray-500">{{ subject.count }} questions</p>
+            </div>
           </div>
         </div>
       </div>
@@ -63,21 +49,13 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div class="flex justify-between items-center mb-8">
         <div>
-          <h2 class="text-3xl font-bold text-gray-900">Recent Questions</h2>
-          <p class="mt-2 text-gray-600">Help others by answering their questions</p>
-        </div>
-        <div class="flex gap-4">
-          <select v-model="selectedSubject" class="rounded-md border-gray-300">
-            <option value="">All Subjects</option>
-            <option v-for="subject in subjects" :key="subject.name" :value="subject.name">
-              {{ subject.name }}
-            </option>
-          </select>
+          <h2 class="text-3xl font-bold text-gray-900">Pertanyaan Terbaru</h2>
+          <p class="mt-2 text-gray-600">Bantu menjawab pertanyaan orang lain</p>
         </div>
       </div>
 
       <div class="grid gap-6">
-        <div v-for="question in questions" :key="question.id" class="bg-white shadow rounded-lg p-6 hover:shadow-md transition-shadow border border-gray-100">
+        <div v-for="question in filteredQuestions" :key="question.id" class="bg-white shadow rounded-lg p-6 hover:shadow-md transition-shadow border border-gray-100">
           <router-link :to="'/question/' + question.id" class="hover:text-blue-600">
           <div class="flex items-start justify-between">
             <div>
@@ -94,7 +72,7 @@
             <div class="flex items-center space-x-4">
               <span class="flex items-center">
                 <span class="text-green-500 mr-1">✓</span>
-                {{ question.answers.length }} answers
+                {{ question.answers.length }} Jawaban
               </span>
               <!-- <span class="flex items-center">
                 <span class="text-blue-500 mr-1">👁</span>
@@ -119,11 +97,17 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { onMounted } from 'vue';
 import NavBarComponent from '../components/NavBarComponent.vue';
 import FooterComponent from '../components/FooterComponent.vue';
 import { fetchAllQuestion } from '@/api/question';
+
+const isAuthenticated = ref(false)
+
+if (sessionStorage.getItem('accessToken')) {
+  isAuthenticated.value = true;
+}
 
 onMounted( async () => {
   questions.value = await fetchAllQuestion();
@@ -142,19 +126,36 @@ onMounted( async () => {
   }
 });
 
-const selectedSubject = ref('')
+const selectedSubjects = ref([])
 
 const subjects = ref([
-  { name: 'Mathematics', icon: '📐', count: '15.2K' },
-  { name: 'Physics', icon: '⚡', count: '12.8K' },
-  { name: 'Chemistry', icon: '🧪', count: '10.5K' },
-  { name: 'Biology', icon: '🧬', count: '9.3K' },
-  { name: 'History', icon: '📚', count: '8.7K' },
-  { name: 'Literature', icon: '📖', count: '7.9K' },
-  { name: 'Computer Science', icon: '💻', count: '11.2K' },
-  { name: 'Languages', icon: '🗣', count: '6.8K' },
+  { name: 'Matematika', icon: '📐', count: '15.2K' },
+  { name: 'Fisika', icon: '⚡', count: '12.8K' },
+  { name: 'Kimia', icon: '🧪', count: '10.5K' },
+  { name: 'Biologi', icon: '🧬', count: '9.3K' },
+  { name: 'Sejarah', icon: '📚', count: '8.7K' },
+  { name: 'Sastra', icon: '📖', count: '7.9K' },
+  { name: 'Ilmu Komputer', icon: '💻', count: '11.2K' },
+  { name: 'Bahasa', icon: '🗣', count: '6.8K' },
 ])
 const questions = ref([])
+
+const filteredQuestions = computed(() => {
+  if (selectedSubjects.value.length === 0) {
+    return questions.value;
+  }
+  return questions.value.filter(question =>
+    question.tags.some(tag => selectedSubjects.value.includes(tag))
+  );
+});
+
+const handleFilterClick = (subjectName) => {
+  if (selectedSubjects.value.includes(subjectName)) {
+    selectedSubjects.value = selectedSubjects.value.filter(subject => subject !== subjectName);
+  } else {
+    selectedSubjects.value.push(subjectName);
+  }
+};
 
 </script>
 
