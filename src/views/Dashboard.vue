@@ -106,7 +106,7 @@
 
   onMounted(async () => {
   try {
-    users.value = await 
+    // users.value = await 
     questions.value = await fetchAllQuestion();
     totalQuestions.value = questions.value.length;
 

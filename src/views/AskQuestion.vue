@@ -53,7 +53,9 @@ const subjectOptions = [
   { value: 'Kimia', label: 'Kimia' },  
   { value: 'Biologi', label: 'Biologi' },  
   { value: 'Sejarah', label: 'Sejarah' },  
-  { value: 'Sastra', label: 'Sastra' }  
+  { value: 'Sastra', label: 'Sastra' },
+  { value: 'Informatika', label: 'Informatika' },
+  { value: 'Bahasa', label: 'Bahasa' },
 ]
 
 const subject = ref([])  

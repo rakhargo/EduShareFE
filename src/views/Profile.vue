@@ -194,6 +194,7 @@ const handleUpdateProfile = async () => {
 
     const response = await updateUser(storedId, updatedData);
     console.log('Profile updated successfully:', response);
+    location.reload();
 
     // Update local state
     user.value = { ...user.value, ...updatedData };

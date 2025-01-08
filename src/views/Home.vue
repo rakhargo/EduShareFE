@@ -135,7 +135,7 @@ const subjects = ref([
   { name: 'Biologi', icon: '🧬', count: '9.3K' },
   { name: 'Sejarah', icon: '📚', count: '8.7K' },
   { name: 'Sastra', icon: '📖', count: '7.9K' },
-  { name: 'Ilmu Komputer', icon: '💻', count: '11.2K' },
+  { name: 'Informatika', icon: '💻', count: '11.2K' },
   { name: 'Bahasa', icon: '🗣', count: '6.8K' },
 ])
 const questions = ref([])

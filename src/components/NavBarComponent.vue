@@ -22,7 +22,10 @@
                 <router-link to="/register" class="btn-primary">Register</router-link>
               </template>
               <template v-else>
-                <div class="flex items-center space-x-4">
+                <div v-if="isLoading">  
+                  <LoadingComponent />
+                </div>  
+                <div class="flex items-center space-x-4" v-if="!isLoading">
                   <span class="text-sm text-gray-500">{{ userPoints }} point</span>
                   <div class="relative">
                     <button 
@@ -57,13 +60,17 @@
 <script setup>
     import { RouterLink, useRouter } from 'vue-router';
     import { onMounted, ref, onUnmounted } from 'vue';
+    import { getUserById } from '@/api/user';
+    import LoadingComponent from '../components/LoadingComponent.vue';
 
     const router = useRouter();
 
     const showProfileMenu = ref(false)
     const isAuthenticated = ref(false)
-    const userPoints = ref(120) // Simulate user points
-    const userInitials = ref('JD') // Simulate user initials
+    const userPoints = ref(0) // Simulate user points
+    const userInitials = ref('') // Simulate user initials
+    const isLoading = ref(true); // Loading state  
+    const user = ref();
 
     if (sessionStorage.getItem('accessToken')) {
       isAuthenticated.value = true;
@@ -81,9 +88,9 @@
 
       console.log('User logged out');
 
-      // Redirect to the login page
+      // Redirect to the home page
       router.push('/');
-      location.reload();
+      // location.reload();
     }
 
     // Close profile menu when clicking outside
@@ -97,12 +104,26 @@
     }
     };
 
-    onMounted(() => {
+    onMounted ( async () => {
         document.addEventListener('click', closeProfileMenu)
         const token = sessionStorage.getItem('accessToken');
         isAuthenticated.value = !!token;
         console.log(token);
-
+        if (sessionStorage.getItem('userId')) {
+          try {  
+            user.value = await getUserById(sessionStorage.getItem('userId'));  
+            console.log(user.value);  
+            userInitials.value = user.value.username
+            .split(' ')
+            .map(word => word[0])
+            .join('')
+            .toUpperCase()
+          } catch (error) {  
+            console.error('Error fetching user:', error);  
+          } finally {  
+            isLoading.value = false; // Set loading to false after fetching  
+          }
+        }
     });
 
     onUnmounted(() => {
