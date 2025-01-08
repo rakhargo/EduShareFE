@@ -10,8 +10,8 @@
               </router-link>
             </div>
             <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-              <router-link to="/" class="nav-link">Home</router-link>
-              <router-link to="/ask" class="nav-link">Ask Question</router-link>
+              <router-link to="/" class="nav-link">Beranda</router-link>
+              <router-link to="/ask" class="nav-link">Tanya Sekarang</router-link>
             </div>
           </div>
           <div class="flex items-center">
@@ -22,7 +22,7 @@
               </template>
               <template v-else>
                 <div class="flex items-center space-x-4">
-                  <span class="text-sm text-gray-500">{{ userPoints }} points</span>
+                  <span class="text-sm text-gray-500">{{ userPoints }} point</span>
                   <div class="relative">
                     <button 
                       @click="toggleProfileMenu" 
@@ -35,11 +35,11 @@
                          class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 profile-menu">
                       <div class="py-1">
                         <router-link to="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                          My Profile
+                          Profil Saya
                         </router-link>
                         <button @click="handleLogout" 
                                 class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                          Sign out
+                          Keluar
                         </button>
                       </div>
                     </div>
