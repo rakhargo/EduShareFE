@@ -18,6 +18,24 @@ export const registerUser = async (username, email, password) => {
   }
 };
 
+export const getUserById = async (user_id) => {
+  try {
+    const response = await axiosInstance.get(`/user/${user_id}`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+export const updateUser = async (userId, userData) => {
+  try {
+    const response = await axiosInstance.put(`/user/${userId}`, userData);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
 export const loginResponse = (response) => {
   const { id, access_token, token_type } = response;
 

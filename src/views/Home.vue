@@ -118,6 +118,21 @@
 
 <script setup>
 import { ref } from 'vue'
+import { onMounted } from 'vue';
+
+onMounted(() => {
+  // Check if the page has already been refreshed
+  if (!sessionStorage.getItem('hasRefreshed')) {
+    // Set the flag to indicate the page has been refreshed
+    sessionStorage.setItem('hasRefreshed', 'true');
+
+    // Reload the page
+    window.location.reload();
+  } else {
+    // Clear the flag so it can reload on the next full page load
+    sessionStorage.removeItem('hasRefreshed');
+  }
+});
 
 const selectedSubject = ref('')
 

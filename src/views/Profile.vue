@@ -100,7 +100,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { loginUser } from '@/api/user'
+import { getUserById, updateUser } from '@/api/user'
 
 const isEditing = ref(false)
 
@@ -133,15 +133,36 @@ const fetchUserData = async () => {
 
     if (!storedId || !accessToken) throw new Error('User not authenticated')
 
-    // Simulate API call for user data (replace with actual API)
-    const response = await loginUser(storedId)
+    // Fetch user data using the getUser function
+    const response = await getUserById(storedId)
     user.value = response
+
+    // Process user initials
     userInitials.value = user.value.username
       .split(' ')
       .map(word => word[0])
       .join('')
       .toUpperCase()
-    editForm.value = { ...user.value }
+
+    // Initialize edit form fields
+    editForm.value = {
+      username: user.value.username,
+      email: user.value.email,
+      bio: user.value.bio
+    }
+
+    // Update stats
+    stats.value = {
+      questions: user.value.questions.length,
+      answers: user.value.answers.length,
+      reputation: user.value.reputation
+    }
+
+    // Populate recent activity (example: using user's questions or answers)
+    recentActivity.value = [
+      ...user.value.questions.map(q => ({ action: `Asked: ${q}`, date: new Date() })),
+      ...user.value.answers.map(a => ({ action: `Answered: ${a}`, date: new Date() }))
+    ]
   } catch (error) {
     console.error('Failed to fetch user data:', error)
   }
@@ -149,12 +170,34 @@ const fetchUserData = async () => {
 
 const handleUpdateProfile = async () => {
   try {
-    console.log('Updating user profile:', editForm.value)
-    isEditing.value = false
+    const storedId = sessionStorage.getItem('userId');
+    if (!storedId) throw new Error('User not authenticated');
+
+    const updatedData = {
+      username: editForm.value.username,
+      email: editForm.value.email,
+      bio: editForm.value.bio,
+      password: '',
+    };
+
+    const response = await updateUser(storedId, updatedData);
+    console.log('Profile updated successfully:', response);
+
+    // Update local state
+    user.value = { ...user.value, ...updatedData };
+    isEditing.value = false;
   } catch (error) {
-    console.error('Failed to update profile:', error)
+    console.error('Failed to update profile:', error);
+    alert('Error updating profile. Please try again.');
   }
-}
+};
+
+
+const formatDate = (date) => {
+  if (!date) return 'Unknown';
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  return new Date(date).toLocaleDateString(undefined, options);
+};
 
 onMounted(fetchUserData)
 </script>

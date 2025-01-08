@@ -25,7 +25,9 @@
                 <div class="flex items-center space-x-4">
                   <span class="text-sm text-gray-500">{{ userPoints }} points</span>
                   <div class="relative">
-                    <button @click="toggleProfileMenu" class="flex items-center space-x-2 nav-link">
+                    <button 
+                      @click="toggleProfileMenu" 
+                      class="flex items-center space-x-2 nav-link profile-menu-toggle">
                       <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
                         <span class="text-sm font-medium text-blue-600">{{ userInitials }}</span>
                       </div>
@@ -58,7 +60,7 @@
 
     <footer class="bg-white border-t mt-12">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-gray-500">
-        &copy; 2025 Brainly Clone. All rights reserved.
+        &copy; 2025 EduShare. All rights reserved.
       </div>
     </footer>
   </div>
@@ -66,29 +68,45 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router';
 
-const showProfileMenu = ref(true)
-const isAuthenticated = ref(true) // Simulate authentication status
+const router = useRouter();
+
+const showProfileMenu = ref(false)
+const isAuthenticated = ref(false)
 const userPoints = ref(120) // Simulate user points
 const userInitials = ref('JD') // Simulate user initials
+
+if (sessionStorage.getItem('accessToken')) {
+  isAuthenticated.value = true;
+}
 
 const toggleProfileMenu = () => {
   showProfileMenu.value = !showProfileMenu.value
 }
 
 const handleLogout = () => {
-  // Simulate logout action
-  isAuthenticated.value = false
-  showProfileMenu.value = false
-  console.log('User logged out')
+  // Clear sessionStorage
+  sessionStorage.clear();
+  isAuthenticated.value = false;
+  showProfileMenu.value = false;
+
+  console.log('User logged out');
+
+  // Redirect to the login page
+  router.push({ name: 'Login' });
 }
 
 // Close profile menu when clicking outside
 const closeProfileMenu = (e) => {
-  if (showProfileMenu.value && !e.target.closest('.profile-menu')) {
-    showProfileMenu.value = false
+  const toggleButton = e.target.closest('.profile-menu-toggle');
+  const menu = e.target.closest('.profile-menu');
+  
+  // Close menu only if the click is outside both the menu and toggle button
+  if (!toggleButton && !menu) {
+    showProfileMenu.value = false;
   }
-}
+};
 
 onMounted(() => {
   document.addEventListener('click', closeProfileMenu)
