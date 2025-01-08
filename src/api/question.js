@@ -26,3 +26,12 @@ export const fetchQuestionById = async (questionId) => {
     throw error.response?.data || error.message;
   }
 };
+
+export const fetchQuestionByIdDetails = async (questionId) => {
+  try {
+    const response = await axiosInstance.get('/question/questions/details/' + questionId);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};

@@ -16,9 +16,9 @@
           {{ question.content }}  
         </p>  
         <div class="mt-4 flex items-center text-sm text-gray-500">  
-          <span>Ditanyakan Oleh {{ question.authorId }}</span>  
+          <span>Ditanyakan Oleh {{ question.authorName }}</span>  
           <span class="mx-2">•</span>  
-          <span>{{ question.createdAt }}</span>  
+          <span>{{ formatDate(question.createdAt) }}</span>  
         </div>  
       </div>  
       <div v-else-if="isLoading">  
@@ -50,9 +50,9 @@
               <div>
                 <p class="text-gray-600">{{ answer.content }}</p>  
                 <div class="mt-2 flex items-center text-sm text-gray-500">  
-                  <span>Answered by {{ answer.authorId }}</span>  
+                  <span>Answered by {{ answer.authorName }}</span>  
                   <span class="mx-2">•</span>  
-                  <span>{{ answer.createdAt }}</span>  
+                  <span>{{ formatDate(answer.createdAt) }}</span>  
                 </div>
               </div>
             </div>
@@ -87,8 +87,8 @@ import { useRoute } from 'vue-router';
 import NavBarComponent from '../components/NavBarComponent.vue';  
 import FooterComponent from '../components/FooterComponent.vue';  
 import LoadingComponent from '../components/LoadingComponent.vue'; // Import your LoadingComponent  
-import { fetchQuestionById } from '@/api/question';  
-import { fetchAllAnswer, postAnswer, upvoteAnswer, revokeUpvoteAnswer } from '@/api/answer';  
+import { fetchQuestionById, fetchQuestionByIdDetails  } from '@/api/question';  
+import { fetchAllAnswerByQuestion, postAnswer, upvoteAnswer, revokeUpvoteAnswer } from '@/api/answer';  
   
 const route = useRoute();  
 const question = ref(null);  
@@ -102,11 +102,23 @@ const isAuthenticated = ref(false)
 if (sessionStorage.getItem('accessToken')) {
   isAuthenticated.value = true;
 }
+
+function formatDate(dateString) {  
+  const date = new Date(dateString);  
+  return new Intl.DateTimeFormat('id-ID', {  
+    year: 'numeric',  
+    month: 'long',  
+    day: 'numeric',  
+    hour: '2-digit',  
+    minute: '2-digit',  
+  }).format(date);  
+}
   
 onMounted(async () => {  
   try {  
-    question.value = await fetchQuestionById(questionId);  
-    const answers = await fetchAllAnswer(route.params.id);
+    // question.value = await fetchQuestionById(questionId);  
+    question.value = await fetchQuestionByIdDetails(questionId);  
+    const answers = await fetchAllAnswerByQuestion(route.params.id);
 
     question.value.answers = answers.map((answer) => ({
       ...answer,

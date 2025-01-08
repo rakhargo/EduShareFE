@@ -9,7 +9,16 @@ try {
     }
 };
 
-export const fetchAllAnswer = async (questionId) => {
+export const fetchAllAnswer = async () => {
+  try {
+    const response = await axiosInstance.get('/answer/answers');
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+export const fetchAllAnswerByQuestion = async (questionId) => {
   try {
     const response = await axiosInstance.get('/answer/answers/question/' + questionId);
     return response.data;

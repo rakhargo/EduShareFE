@@ -37,38 +37,37 @@
           <div class="grid grid-cols-4 gap-8 text-center mt-8">
             <div class="bg-blue-50 rounded-lg p-6">
               <div class="text-4xl font-bold text-blue-600">{{ ma }}</div>
-              <div class="mt-2 text-sm text-gray-600">Pertanyaan Matematika</div>
+              <div class="mt-2 text-sm text-gray-600">Pertanyaan Matematika 📐</div>
             </div>
             <div class="bg-blue-50 rounded-lg p-6">
               <div class="text-4xl font-bold text-blue-600">{{ fi }}</div>
-              <div class="mt-2 text-sm text-gray-600">Pertanyaan Fisika</div>
+              <div class="mt-2 text-sm text-gray-600">Pertanyaan Fisika⚡</div>
             </div>
             <div class="bg-blue-50 rounded-lg p-6">
               <div class="text-4xl font-bold text-blue-600">{{ ki }}</div>
-              <div class="mt-2 text-sm text-gray-600">Pertanyaan Kimia</div>
+              <div class="mt-2 text-sm text-gray-600">Pertanyaan Kimia🧪</div>
             </div>
             <div class="bg-blue-50 rounded-lg p-6">
               <div class="text-4xl font-bold text-blue-600">{{ bi }}</div>
-              <div class="mt-2 text-sm text-gray-600">Pertanyaan Biologi</div>
+              <div class="mt-2 text-sm text-gray-600">Pertanyaan Biologi🧬</div>
             </div>
           </div>
-
           <div class="grid grid-cols-4 gap-8 text-center mt-8">
             <div class="bg-blue-50 rounded-lg p-6">
               <div class="text-4xl font-bold text-blue-600">{{ sej }}</div>
-              <div class="mt-2 text-sm text-gray-600">Pertanyaan Sejarah</div>
+              <div class="mt-2 text-sm text-gray-600">Pertanyaan Sejarah📚</div>
             </div>
             <div class="bg-blue-50 rounded-lg p-6">
               <div class="text-4xl font-bold text-blue-600">{{ sas }}</div>
-              <div class="mt-2 text-sm text-gray-600">Pertanyaan Sastra</div>
-            </div>
-            <div class="bg-blue-50 rounded-lg p-6">
-              <div class="text-4xl font-bold text-blue-600">{{ bhs }}</div>
-              <div class="mt-2 text-sm text-gray-600">Pertanyaan Bahasa</div>
+              <div class="mt-2 text-sm text-gray-600">Pertanyaan Sastra📖</div>
             </div>
             <div class="bg-blue-50 rounded-lg p-6">
               <div class="text-4xl font-bold text-blue-600">{{ inf }}</div>
-              <div class="mt-2 text-sm text-gray-600">Pertanyaan Informatika</div>
+              <div class="mt-2 text-sm text-gray-600">Pertanyaan Informatika 💻</div>
+            </div>
+            <div class="bg-blue-50 rounded-lg p-6">
+              <div class="text-4xl font-bold text-blue-600">{{ bhs }}</div>
+              <div class="mt-2 text-sm text-gray-600">Pertanyaan Bahasa🗣</div>
             </div>
           </div>
 
@@ -96,12 +95,14 @@
         </div>
         <div class="grid gap-6">
           <div
-            v-for="activity in questions"
+            v-for="activity in activities"
             :key="activity.id"
             class="bg-white shadow rounded-lg p-6 hover:shadow-md transition-shadow border border-gray-100"
           >
-            <div class="flex justify-between items-center">
+          <router-link v-if="activity.title" :to="'/question/' + activity.id" class="hover:text-blue-600">
+          <div class="flex justify-between items-center" >
               <div>
+                <h3 class="text-lg font-medium text-blue-500">PERTANYAAN</h3>
                 <h3 class="text-lg font-medium text-gray-900">{{ activity.title }}</h3>
                 <p class="mt-2 text-gray-600">{{ activity.content }}</p>
               </div>
@@ -117,6 +118,27 @@
                 }) }}
               </span>
             </div>
+            </router-link>
+
+            <router-link v-else :to="'/question/' + activity.questionId" class="hover:text-blue-600">
+              <div class="flex justify-between items-center">
+                <div>
+                  <h3 class="text-lg font-medium text-green-500">JAWABAN</h3>
+                  <p class="mt-2 text-gray-600">{{ activity.content }}</p>
+                </div>
+                <span class="text-sm text-gray-500">
+                  {{ new Date(activity.createdAt).toLocaleString('en-GB', { 
+                    day: '2-digit', 
+                    month: '2-digit', 
+                    year: 'numeric', 
+                    hour: '2-digit', 
+                    minute: '2-digit', 
+                    second: '2-digit', 
+                    hour12: false 
+                  }) }}
+                </span>
+              </div>
+          </router-link>
           </div>
         </div>
       </div>
@@ -129,10 +151,13 @@
   import { ref, onMounted } from "vue";
   import { fetchAllQuestion } from '@/api/question';
   import { getAllUsers } from '@/api/user';
+  import { fetchAllAnswer } from '@/api/answer';
   import NavBarComponent from "../components/NavBarComponent.vue";
   import FooterComponent from "../components/FooterComponent.vue";
   
+  const activities = ref([]);
   const questions = ref([]);
+  const answers = ref([]);
   const users = ref([]);
   const ma = ref(0);
   const fi = ref(0);
@@ -144,6 +169,7 @@
   const inf = ref(0);
 
   const totalQuestions = ref(0);
+  const totalAnswers = ref(0);
   const totalAnswered = ref(0);
   const totalUnanswered = ref(0);
   const totalUsers = ref(0);
@@ -154,8 +180,12 @@
   onMounted(async () => {
   try {
     questions.value = await fetchAllQuestion();
+    answers.value = await fetchAllAnswer();
     totalQuestions.value = questions.value.length;
+    totalAnswers.value = answers.value.length;
 
+    activities.value = [...questions.value, ...answers.value];
+    activities.value.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     // users.value = await getAllUsers();
     // totalUsers.value = users.value.length;
 
