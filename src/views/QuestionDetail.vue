@@ -35,11 +35,16 @@
         <div v-if="!isLoading && question.answers.length > 0">  
           <div v-for="answer in question.answers" :key="answer.id" class="border-b last:border-0 py-6">
             <div class="flex items-start space-x-4">
-              <!-- Upvote Icon -->
-              <i class="bi bi-arrow-up-circle text-2xl"
-              :style="{ color: answer.isUpvoted ? 'blue' : 'black' }"
-              @click="toggleUpvote(answer)"
-              ></i>
+              <div class="flex flex-col items-center">
+                <!-- Upvote Icon -->
+                <i class="bi bi-arrow-up-circle text-2xl"
+                  :style="{ color: answer.isUpvoted ? 'blue' : 'black' }"
+                  @click="toggleUpvote(answer)">
+                </i>
+
+                <!-- Upvote Count (on the bottom of the icon) -->
+                <p class="text-sm text-gray-500 mt-1">{{ answer.upvotes }}</p>
+              </div>
               
               <!-- Answer Content -->
               <div>
@@ -135,9 +140,11 @@ const toggleUpvote = async (answer) => {
   try {
     if(!answer.isUpvoted){
       const response = await upvoteAnswer(answer.id, userId);
+      answer.upvotes = response.upvotes;
     }
     else{
       const response = await revokeUpvoteAnswer(answer.id, userId);
+      answer.upvotes = response.upvotes;
     }
     answer.isUpvoted = !answer.isUpvoted;
 
