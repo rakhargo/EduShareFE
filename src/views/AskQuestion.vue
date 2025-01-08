@@ -5,7 +5,7 @@
     
     <form @submit.prevent="handleSubmit" class="space-y-6">
       <div>  
-        <label class="block text-sm font-medium text-gray-700">Bahasan</label>  
+        <label class="block text-sm font-medium text-gray-700">Subjek</label>  
         <div class="mt-1 space-y-2">  
           <div v-for="option in subjectOptions" :key="option.value" class="flex items-center">  
             <input type="checkbox" :id="option.value" :value="option.value" v-model="subject"  
@@ -53,7 +53,9 @@ const subjectOptions = [
   { value: 'Kimia', label: 'Kimia' },  
   { value: 'Biologi', label: 'Biologi' },  
   { value: 'Sejarah', label: 'Sejarah' },  
-  { value: 'Sastra', label: 'Sastra' }  
+  { value: 'Sastra', label: 'Sastra' },
+  { value: 'Informatika', label: 'Informatika' },
+  { value: 'Bahasa', label: 'Bahasa' },
 ]
 
 const subject = ref([])  
