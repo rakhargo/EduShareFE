@@ -33,15 +33,24 @@
         <h2 class="text-xl font-bold text-gray-900 mb-4" v-if="!isLoading && question">{{ question.answers.length }} Jawaban</h2>  
           
         <div v-if="!isLoading && question.answers.length > 0">  
-          <div v-for="answer in question.answers" :key="answer.id" class="border-b last:border-0 py-6">  
-            <p class="text-gray-600">{{ answer.content }}</p>  
-            <div class="mt-4 flex items-center justify-between">  
-              <div class="flex items-center text-sm text-gray-500">  
-                <span>Answered by {{ answer.authorId }}</span>  
-                <span class="mx-2">•</span>  
-                <span>{{ answer.createdAt }}</span>  
-              </div>  
-            </div>  
+          <div v-for="answer in question.answers" :key="answer.id" class="border-b last:border-0 py-6">
+            <div class="flex items-start space-x-4">
+              <!-- Upvote Icon -->
+              <i class="bi bi-arrow-up-circle text-2xl"
+              :style="{ color: answer.isUpvoted ? 'blue' : 'black' }"
+              @click="toggleUpvote(answer)"
+              ></i>
+              
+              <!-- Answer Content -->
+              <div>
+                <p class="text-gray-600">{{ answer.content }}</p>  
+                <div class="mt-2 flex items-center text-sm text-gray-500">  
+                  <span>Answered by {{ answer.authorId }}</span>  
+                  <span class="mx-2">•</span>  
+                  <span>{{ answer.createdAt }}</span>  
+                </div>
+              </div>
+            </div>
           </div>  
         </div>  
         <div v-else-if="!isLoading">  
@@ -68,13 +77,13 @@
 </template>  
   
 <script setup>  
-import { ref, onMounted } from 'vue';  
+import { ref, onMounted, computed } from 'vue';  
 import { useRoute } from 'vue-router';  
 import NavBarComponent from '../components/NavBarComponent.vue';  
 import FooterComponent from '../components/FooterComponent.vue';  
 import LoadingComponent from '../components/LoadingComponent.vue'; // Import your LoadingComponent  
 import { fetchQuestionById } from '@/api/question';  
-import { fetchAllAnswer, postAnswer } from '@/api/answer';  
+import { fetchAllAnswer, postAnswer, upvoteAnswer, revokeUpvoteAnswer } from '@/api/answer';  
   
 const route = useRoute();  
 const question = ref(null);  
@@ -92,7 +101,12 @@ if (sessionStorage.getItem('accessToken')) {
 onMounted(async () => {  
   try {  
     question.value = await fetchQuestionById(questionId);  
-    question.value.answers = await fetchAllAnswer(questionId); // Assuming this fetches answers  
+    const answers = await fetchAllAnswer(route.params.id);
+
+    question.value.answers = answers.map((answer) => ({
+      ...answer,
+      isUpvoted: Array.isArray(answer.voters) && answer.voters.includes(userId), // Assume `voters` is a list of user IDs who upvoted
+    })); 
     console.log(question.value);  
   } catch (error) {  
     console.error('Error fetching question:', error);  
@@ -116,6 +130,21 @@ const handleSubmitAnswer = async () => {
     console.error('Post answer failed:', error);  
   }  
 }  
+
+const toggleUpvote = async (answer) => {
+  try {
+    if(!answer.isUpvoted){
+      const response = await upvoteAnswer(answer.id, userId);
+    }
+    else{
+      const response = await revokeUpvoteAnswer(answer.id, userId);
+    }
+    answer.isUpvoted = !answer.isUpvoted;
+
+  } catch (error) {
+    console.error('Upvote failed: ', error);
+  }
+};
 </script>  
   
 <style scoped>  

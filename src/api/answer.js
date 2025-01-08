@@ -17,3 +17,21 @@ export const fetchAllAnswer = async (questionId) => {
     throw error.response?.data || error.message;
   }
 };
+
+export const upvoteAnswer = async (answerId, userId) => {
+  try {
+    const response = await axiosInstance.put(`/answer/${userId}/upvote/answer/${answerId}`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+export const revokeUpvoteAnswer = async (answerId, userId) => {
+  try {
+    const response = await axiosInstance.put(`/answer/${userId}/revoke/answer/${answerId}`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
