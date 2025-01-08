@@ -32,10 +32,14 @@
         <h2 class="text-3xl font-bold text-gray-900 text-center mb-8">Bahasan Terpopuler</h2>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           <div v-for="subject in subjects" :key="subject.name" 
-               class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer">
-            <div class="text-2xl mb-2" v-html="subject.icon"></div>
-            <h3 class="font-medium text-gray-900">{{ subject.name }}</h3>
-            <p class="text-sm text-gray-500">{{ subject.count }} questions</p>
+               class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+               :class="{'bg-blue-100': selectedSubject === subject.name, 'border-2 border-blue-500': selectedSubject === subject.name}"
+               >
+            <div @click="handleFilterClick(subject.name)">
+              <div class="text-2xl mb-2" v-html="subject.icon"></div>
+              <h3 class="font-medium text-gray-900">{{ subject.name }}</h3>
+              <p class="text-sm text-gray-500">{{ subject.count }} questions</p>
+            </div>
           </div>
         </div>
       </div>
@@ -146,6 +150,10 @@ const filteredQuestions = computed(() => {
     question.tags.includes(selectedSubject.value)
   );
 });
+
+const handleFilterClick = (subjectName) => {
+  selectedSubject.value = subjectName;
+};
 
 </script>
 
