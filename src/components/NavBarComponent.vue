@@ -9,8 +9,8 @@
                 <span class="text-2xl font-bold text-blue-600">EduShare</span>
               </router-link>
             </div>
-            <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-              <router-link to="/" class="nav-link">Beranda</router-link>
+            <div v-if="isAuthenticated" class="hidden sm:ml-6 sm:flex sm:space-x-8">
+              <!-- <router-link to="/" class="nav-link">Beranda</router-link> -->
               <router-link to="/ask" class="nav-link">Tanya Sekarang</router-link>
             </div>
           </div>
@@ -65,23 +65,24 @@
     const userInitials = ref('JD') // Simulate user initials
 
     if (sessionStorage.getItem('accessToken')) {
-    isAuthenticated.value = true;
+      isAuthenticated.value = true;
     }
 
     const toggleProfileMenu = () => {
-    showProfileMenu.value = !showProfileMenu.value
+      showProfileMenu.value = !showProfileMenu.value
     }
 
     const handleLogout = () => {
-    // Clear sessionStorage
-    sessionStorage.clear();
-    isAuthenticated.value = false;
-    showProfileMenu.value = false;
+      // Clear sessionStorage
+      sessionStorage.clear();
+      isAuthenticated.value = false;
+      showProfileMenu.value = false;
 
-    console.log('User logged out');
+      console.log('User logged out');
 
-    // Redirect to the login page
-    router.push({ name: 'Login' });
+      // Redirect to the login page
+      router.push('/');
+      location.reload();
     }
 
     // Close profile menu when clicking outside

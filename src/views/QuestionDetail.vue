@@ -50,7 +50,7 @@
       </div>  
   
       <!-- Add Answer -->  
-      <div class="mt-8">  
+      <div class="mt-8" v-if="isAuthenticated">  
         <h3 class="text-lg font-medium text-gray-900">Jawaban Anda</h3>  
         <form @submit.prevent="handleSubmitAnswer" class="mt-4">  
           <textarea v-model="content"  
@@ -65,7 +65,6 @@
       </div>  
     </div>  
   </div>  
-  <FooterComponent />  
 </template>  
   
 <script setup>  
@@ -83,6 +82,12 @@ const content = ref('');
 const userId = sessionStorage.getItem('userId');  
 const questionId = route.params.id;  
 const isLoading = ref(true); // Loading state  
+
+const isAuthenticated = ref(false)
+
+if (sessionStorage.getItem('accessToken')) {
+  isAuthenticated.value = true;
+}
   
 onMounted(async () => {  
   try {  

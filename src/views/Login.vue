@@ -1,4 +1,5 @@
 <template>
+  <NavBarComponent />
   <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full space-y-8">
       <div>
@@ -38,12 +39,15 @@
       </form>
     </div>
   </div>
+  <FooterComponent />
 </template>
 
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { loginUser, loginResponse } from '@/api/user';
+import NavBarComponent from '../components/NavBarComponent.vue';
+import FooterComponent from '../components/FooterComponent.vue';
 
 const email = ref('');
 const password = ref('');

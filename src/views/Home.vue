@@ -13,10 +13,10 @@
             Gabung dengan komunitas pelajar dan ahli kami. Temukan jawaban atas pertanyaan Anda dengan cepat!
           </p>
           <div class="mt-10 flex justify-center gap-4">
-            <router-link to="/ask" class="px-8 py-3 border border-transparent text-lg font-medium rounded-md text-blue-700 bg-white hover:bg-blue-50 md:py-4 md:text-xl md:px-10">
+            <router-link v-if="isAuthenticated" to="/ask" class="px-8 py-3 border border-transparent text-lg font-medium rounded-md text-blue-700 bg-white hover:bg-blue-50 md:py-4 md:text-xl md:px-10">
               Tanya Sekarang
             </router-link>
-            <router-link to="/register" class="px-8 py-3 border border-white text-lg font-medium rounded-md text-white hover:bg-blue-700 md:py-4 md:text-xl md:px-10">
+            <router-link v-else to="/register" class="px-8 py-3 border border-white text-lg font-medium rounded-md text-white hover:bg-blue-700 md:py-4 md:text-xl md:px-10">
               Gabung Sekarang
             </router-link>
           </div>
@@ -102,6 +102,12 @@ import { onMounted } from 'vue';
 import NavBarComponent from '../components/NavBarComponent.vue';
 import FooterComponent from '../components/FooterComponent.vue';
 import { fetchAllQuestion } from '@/api/question';
+
+const isAuthenticated = ref(false)
+
+if (sessionStorage.getItem('accessToken')) {
+  isAuthenticated.value = true;
+}
 
 onMounted( async () => {
   questions.value = await fetchAllQuestion();
