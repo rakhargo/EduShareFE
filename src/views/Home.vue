@@ -145,7 +145,7 @@ const filteredQuestions = computed(() => {
     return questions.value;
   }
   return questions.value.filter(question =>
-    question.tags.some(tag => selectedSubjects.value.includes(tag))
+    selectedSubjects.value.every(subject => question.tags.includes(subject))
   );
 });
 
