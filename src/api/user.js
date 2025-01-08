@@ -18,6 +18,14 @@ export const registerUser = async (username, email, password) => {
   }
 };
 
+export const getAllUsers = async () => {
+  try {
+    const response = await axiosInstance.get('/user/');
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
 export const getUserById = async (user_id) => {
   try {
     const response = await axiosInstance.get(`/user/${user_id}`);
