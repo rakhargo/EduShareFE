@@ -87,26 +87,26 @@
               <p class="mt-2 text-gray-600 line-clamp-2">{{ question.content }}</p>
             </div>
             <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-              <!-- {{ question.subject }} -->
+              {{ question.tags.join(', ') }}
             </span>
           </div>
           <div class="mt-4 flex items-center justify-between text-sm text-gray-500">
             <div class="flex items-center space-x-4">
               <span class="flex items-center">
                 <span class="text-green-500 mr-1">✓</span>
-                <!-- {{ question.answers }} answers -->
+                {{ question.answers.length }} answers
               </span>
-              <span class="flex items-center">
+              <!-- <span class="flex items-center">
                 <span class="text-blue-500 mr-1">👁</span>
-                <!-- {{ question.views }} views -->
-              </span>
+                {{ question.views }} views
+              </span> -->
             </div>
             <div class="flex items-center">
               <span class="inline-flex items-center space-x-2">
                 <span class="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center">
                   <!-- {{ question.author[0] }} -->
                 </span>
-                <!-- <span>{{ question.author }}</span> -->
+                <span>{{ question.authorId }}</span>
               </span>
             </div>
           </div>
@@ -127,7 +127,8 @@ import { fetchAllQuestion } from '@/api/question';
 
 onMounted( async () => {
   questions.value = await fetchAllQuestion();
-
+  console.log(questions.value);
+  questions.value.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); 
   // Check if the page has already been refreshed
   if (!sessionStorage.getItem('hasRefreshed')) {
     // Set the flag to indicate the page has been refreshed
