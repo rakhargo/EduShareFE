@@ -33,7 +33,7 @@
               <div class="mt-2 text-sm text-gray-600">Questions Unanswered</div>
             </div>
           </div>
-          <div class="grid grid-cols-3 gap-8 text-center mt-8">
+          <!-- <div class="grid grid-cols-3 gap-8 text-center mt-8">
             <div class="bg-blue-50 rounded-lg p-6">
               <div class="text-4xl font-bold text-blue-600">{{ totalUsers }}</div>
               <div class="mt-2 text-sm text-gray-600">Registered Users</div>
@@ -46,7 +46,7 @@
               <div class="text-4xl font-bold text-blue-600">{{ totalSubjects }}</div>
               <div class="mt-2 text-sm text-gray-600">Subjects Covered</div>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
   
@@ -89,6 +89,7 @@
   <script setup>
   import { ref, onMounted } from "vue";
   import { fetchAllQuestion } from '@/api/question';
+  import { getAllUsers } from '@/api/user';
   import NavBarComponent from "../components/NavBarComponent.vue";
   import FooterComponent from "../components/FooterComponent.vue";
   
@@ -100,15 +101,14 @@
   const totalUsers = ref(0);
   const totalExperts = ref(15000);
   const totalSubjects = ref(100);
-  
-  // Mock recent activity data
-  const recentActivities = ref([]);
 
   onMounted(async () => {
   try {
-    users.value = await 
     questions.value = await fetchAllQuestion();
     totalQuestions.value = questions.value.length;
+
+    // users.value = await getAllUsers();
+    // totalUsers.value = users.value.length;
 
     // Count answered and unanswered questions
     totalAnswered.value = questions.value.filter(q => q.answers.length > 0).length;
