@@ -43,6 +43,13 @@
           </div>
         </div>
 
+        <!-- Stats -->
+        <div class="px-6 py-4 border-b">
+          <h2 class="text-lg font-medium text-gray-900 mb-2">Statistics</h2>
+          <ChartComponent :data="stats" />
+          <!-- <p class="text-gray-600">{{ user.bio || 'No bio provided yet.' }}</p> -->
+        </div>
+
         <!-- Bio -->
         <div class="px-6 py-4 border-b">
           <h2 class="text-lg font-medium text-gray-900 mb-2">About</h2>
@@ -105,6 +112,7 @@ import { ref, onMounted } from 'vue'
 import { getUserById, updateUser } from '@/api/user'
 import NavBarComponent from '../components/NavBarComponent.vue';
 import FooterComponent from '../components/FooterComponent.vue';
+import ChartComponent from '../components/ChartComponent.vue';
 
 const isEditing = ref(false)
 
