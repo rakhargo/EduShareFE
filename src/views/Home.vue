@@ -29,7 +29,7 @@
     <!-- Subject Categories -->
     <div class="bg-gray-50 py-12">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-3xl font-bold text-gray-900 text-center mb-8">Bahasan Terpopuler</h2>
+        <h2 class="text-3xl font-bold text-gray-900 text-center mb-8">Subjek Terpopuler</h2>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           <div v-for="subject in subjects" :key="subject.name" 
                class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer"
@@ -38,7 +38,7 @@
             <div @click="handleFilterClick(subject.name)">
               <div class="text-2xl mb-2" v-html="subject.icon"></div>
               <h3 class="font-medium text-gray-900">{{ subject.name }}</h3>
-              <p class="text-sm text-gray-500">{{ subject.count }} questions</p>
+              <!-- <p class="text-sm text-gray-500">{{ subject.count }} questions</p> -->
             </div>
           </div>
         </div>
@@ -81,10 +81,15 @@
             </div>
             <div class="flex items-center">
               <span class="inline-flex items-center space-x-2">
-                <span class="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center">
-                  <!-- {{ question.author[0] }} -->
-                </span>
-                <span>{{ question.authorId }}</span>
+                <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                  <span class="text-sm font-medium text-blue-600">
+                    {{ question.authorName
+                      .split(' ')
+                      .map(word => word[0])
+                      .join('')
+                      .toUpperCase() }}</span>
+                </div>
+                <span>{{ question.authorName }}</span>
               </span>
             </div>
           </div>
@@ -104,6 +109,7 @@ import FooterComponent from '../components/FooterComponent.vue';
 import { fetchAllQuestion } from '@/api/question';
 
 const isAuthenticated = ref(false)
+const userInitials = ref('')
 
 if (sessionStorage.getItem('accessToken')) {
   isAuthenticated.value = true;

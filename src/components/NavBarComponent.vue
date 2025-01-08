@@ -11,8 +11,7 @@
             </div>
             <div v-if="isAuthenticated" class="hidden sm:ml-6 sm:flex sm:space-x-8">
               <!-- <router-link to="/" class="nav-link">Beranda</router-link> -->
-              <router-link to="/ask" class="nav-link">Tanya Sekarang</router-link>
-              <router-link to="/dashboard" class="nav-link">Dashboard</router-link>
+              <router-link  to="/ask" class="nav-link">Tanya Sekarang</router-link>
             </div>
           </div>
           <div class="flex items-center">
@@ -25,8 +24,10 @@
                 <div v-if="isLoading">  
                   <LoadingComponent />
                 </div>  
-                <div class="flex items-center space-x-4" v-if="!isLoading">
-                  <span class="text-sm text-gray-500">{{ userPoints }} point</span>
+                <div v-else class="flex items-center space-x-4">
+                  <router-link v-if="!isLoading && user.username == 'admin'" to="/dashboard" class="nav-link">Dashboard</router-link>
+                  <span v-if="user.username == 'admin'" class="text-sm text-gray-500">Admin</span>
+                  <span v-else class="text-sm text-gray-500">{{ userPoints }} point</span>
                   <div class="relative">
                     <button 
                       @click="toggleProfileMenu" 

@@ -7,10 +7,10 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div class="text-center">
             <h1 class="text-4xl font-extrabold sm:text-5xl md:text-6xl">
-              EduShare Dashboard
+              Dashboard EduShare
             </h1>
             <p class="mt-3 max-w-md mx-auto text-xl text-blue-100 sm:text-2xl md:mt-5 md:max-w-3xl">
-              Get insights into platform usage and performance.
+              Dapatkan wawasan tentang penggunaan dan kinerja platform.
             </p>
           </div>
         </div>
@@ -92,7 +92,7 @@
       <!-- Recent Activity Section -->
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div class="flex justify-between items-center mb-8">
-          <h2 class="text-3xl font-bold text-gray-900">Recent User Activities</h2>
+          <h2 class="text-3xl font-bold text-gray-900">Aktivitas Pengguna Terkini</h2>
         </div>
         <div class="grid gap-6">
           <div
