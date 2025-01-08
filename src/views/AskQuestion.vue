@@ -1,20 +1,18 @@
 <template>
+  <NavBarComponent />
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <h1 class="text-3xl font-bold text-gray-900 mb-8">Ask a Question</h1>
     
     <form @submit.prevent="handleSubmit" class="space-y-6">
-      <div>
-        <label for="subject" class="block text-sm font-medium text-gray-700">Subject</label>
-        <select id="subject" v-model="subject"
-                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
-          <option value="">Select a subject</option>
-          <option value="mathematics">Mathematics</option>
-          <option value="physics">Physics</option>
-          <option value="chemistry">Chemistry</option>
-          <option value="biology">Biology</option>
-          <option value="history">History</option>
-          <option value="literature">Literature</option>
-        </select>
+      <div>  
+        <label class="block text-sm font-medium text-gray-700">Subject</label>  
+        <div class="mt-1 space-y-2">  
+          <div v-for="option in subjectOptions" :key="option.value" class="flex items-center">  
+            <input type="checkbox" :id="option.value" :value="option.value" v-model="subject"  
+                   class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">  
+            <label :for="option.value" class="ml-2 block text-sm text-gray-700">{{ option.label }}</label>  
+          </div>  
+        </div>  
       </div>
 
       <div>
@@ -39,21 +37,49 @@
       </div>
     </form>
   </div>
+  <FooterComponent />
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router';
+import NavBarComponent from '../components/NavBarComponent.vue';
+import FooterComponent from '../components/FooterComponent.vue';
+import { postQuestion } from '@/api/question';
 
-const subject = ref('')
-const title = ref('')
+const subjectOptions = [  
+  { value: 'Mathematics', label: 'Mathematics' },  
+  { value: 'Physics', label: 'Physics' },  
+  { value: 'Chemistry', label: 'Chemistry' },  
+  { value: 'Biology', label: 'Biology' },  
+  { value: 'History', label: 'History' },  
+  { value: 'Literature', label: 'Literature' }  
+]
+
+const subject = ref([])  
+const title = ref('')  
 const content = ref('')
+const userId = sessionStorage.getItem('userId')
+const router = useRouter();
 
-const handleSubmit = () => {
+const handleSubmit = async () => {
   // Handle question submission logic here
   console.log('Question submitted:', {
     subject: subject.value,
     title: title.value,
     content: content.value
   })
-}
+
+  try {
+    const response = await postQuestion(title.value, content.value, subject.value, userId);
+    console.log('Post successful:', response);
+
+    // Redirect to Home.vue after a short delay
+    router.push('/question/' + response.id);
+  } catch (error) {
+    console.error('Post failed:', error);
+
+  }
+
+};
 </script>

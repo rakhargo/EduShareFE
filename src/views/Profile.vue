@@ -189,7 +189,7 @@ const handleUpdateProfile = async () => {
       username: editForm.value.username,
       email: editForm.value.email,
       bio: editForm.value.bio,
-      password: '',
+      // password: '',
     };
 
     const response = await updateUser(storedId, updatedData);
