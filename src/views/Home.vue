@@ -77,7 +77,7 @@
       </div>
 
       <div class="grid gap-6">
-        <div v-for="question in questions" :key="question.id" class="bg-white shadow rounded-lg p-6 hover:shadow-md transition-shadow border border-gray-100">
+        <div v-for="question in filteredQuestions" :key="question.id" class="bg-white shadow rounded-lg p-6 hover:shadow-md transition-shadow border border-gray-100">
           <router-link :to="'/question/' + question.id" class="hover:text-blue-600">
           <div class="flex items-start justify-between">
             <div>
@@ -119,7 +119,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { onMounted } from 'vue';
 import NavBarComponent from '../components/NavBarComponent.vue';
 import FooterComponent from '../components/FooterComponent.vue';
@@ -155,6 +155,15 @@ const subjects = ref([
   { name: 'Languages', icon: '🗣', count: '6.8K' },
 ])
 const questions = ref([])
+
+const filteredQuestions = computed(() => {
+  if (!selectedSubject.value) {
+    return questions.value;
+  }
+  return questions.value.filter(question =>
+    question.tags.includes(selectedSubject.value)
+  );
+});
 
 </script>
 
