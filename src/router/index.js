@@ -5,6 +5,7 @@ import Register from '../views/Register.vue'
 import Profile from '../views/Profile.vue'
 import AskQuestion from '../views/AskQuestion.vue'
 import QuestionDetail from '../views/QuestionDetail.vue'
+import Dashboard from '../views/Dashboard.vue'
 
 const routes = [
   {
@@ -38,6 +39,11 @@ const routes = [
     path: '/question/:id',
     name: 'QuestionDetail',
     component: QuestionDetail
+  },
+  {
+    path: '/dashboard',
+    name: 'Dashboard',
+    component: Dashboard
   }
 ]
 

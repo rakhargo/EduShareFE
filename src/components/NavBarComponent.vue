@@ -12,6 +12,7 @@
             <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
               <router-link to="/" class="nav-link">Home</router-link>
               <router-link to="/ask" class="nav-link">Ask Question</router-link>
+              <router-link to="/dashboard" class="nav-link">Dashboard</router-link>
             </div>
           </div>
           <div class="flex items-center">
