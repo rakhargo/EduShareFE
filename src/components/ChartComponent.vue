@@ -20,19 +20,15 @@
             <div v-for="i in 5" :key="i" class="border-b border-gray-200 h-0"></div>
           </div>
           <!-- Bars -->
-          <div class="absolute left-8 right-0 h-full flex items-end justify-around pb-8">
-            <div class="w-16 flex flex-col items-center">
-              <div
-                class="w-full bg-blue-500 rounded-t transition-all duration-500 ease-in-out hover:bg-blue-600"
+          <div class="absolute left-8 right-0 h-full flex items-end justify-around">
+            <div
+                class="w-16 bg-blue-500 rounded-t transition-all duration-500 ease-in-out hover:bg-blue-600"
                 :style="`height: ${(data.questions / (maxValue || 1)) * 100}%`"
-              ></div>
-            </div>
-            <div class="w-16 flex flex-col items-center">
-              <div
-                class="w-full bg-green-500 rounded-t transition-all duration-500 ease-in-out hover:bg-green-600"
-                :style="`height: ${(data.answers / (maxValue || 1)) * 100}%`"
-              ></div>
-            </div>
+            ></div>
+            <div
+              class="w-16 bg-green-500 rounded-t transition-all duration-500 ease-in-out hover:bg-green-600"
+              :style="`height: ${(data.answers / (maxValue || 1)) * 100}%`"
+            ></div>
           </div>
         </div>
   
