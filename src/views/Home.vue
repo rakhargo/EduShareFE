@@ -1,4 +1,6 @@
 <template>
+   <NavBarComponent />
+   
   <div>
     <!-- Hero Section -->
     <div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white">
@@ -114,11 +116,14 @@
       </div>
     </div>
   </div>
+  <FooterComponent />
 </template>
 
 <script setup>
 import { ref } from 'vue'
 import { onMounted } from 'vue';
+import NavBarComponent from '../components/NavBarComponent.vue';
+import FooterComponent from '../components/FooterComponent.vue';
 
 onMounted(() => {
   // Check if the page has already been refreshed
