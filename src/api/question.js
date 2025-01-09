@@ -35,3 +35,12 @@ export const fetchQuestionByIdDetails = async (questionId) => {
     throw error.response?.data || error.message;
   }
 };
+
+export const deleteQuestion = async (questionId) => {
+  try {
+    const response = await axiosInstance.delete('/question/questions/' + questionId);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};

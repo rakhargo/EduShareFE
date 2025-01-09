@@ -9,6 +9,15 @@ try {
     }
 };
 
+export const deleteAnswer = async (answerId) => {
+  try {
+    const response = await axiosInstance.delete('/answer/answers/' + answerId);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
 export const fetchAllAnswer = async () => {
   try {
     const response = await axiosInstance.get('/answer/answers');

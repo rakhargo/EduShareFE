@@ -20,6 +20,13 @@
           <span class="mx-2">•</span>  
           <span>{{ formatDate(question.createdAt) }}</span>  
         </div>  
+        <br>
+        <div v-if="isAuthenticated && user.username == 'admin'" onclick="return confirm('Apa anda yakin menghapus pertanyaan ini?');" @click="handleDeleteQuestion(questionId)">
+          <button 
+                class="inline-flex items-center px-8 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">  
+          DELETE
+        </button>
+        </div>
       </div>  
       <div v-else-if="isLoading">  
         <LoadingComponent /> <!-- Use your LoadingComponent here -->  
@@ -56,6 +63,13 @@
                 </div>
               </div>
             </div>
+            <br>
+            <div v-if="isAuthenticated && user.username == 'admin'" onclick="return confirm('Apa anda yakin menghapus jawaban ini?');" @click="handleDeleteAnswer(answer.id)">
+              <button 
+                    class="inline-flex items-center px-8 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">  
+              DELETE
+            </button>
+            </div>
           </div>  
         </div>  
         <div v-else-if="!isLoading">  
@@ -83,19 +97,22 @@
   
 <script setup>  
 import { ref, onMounted, computed } from 'vue';  
-import { useRoute } from 'vue-router';  
+import { useRoute, useRouter } from 'vue-router';  
 import NavBarComponent from '../components/NavBarComponent.vue';  
 import FooterComponent from '../components/FooterComponent.vue';  
 import LoadingComponent from '../components/LoadingComponent.vue'; // Import your LoadingComponent  
-import { fetchQuestionById, fetchQuestionByIdDetails  } from '@/api/question';  
-import { fetchAllAnswerByQuestion, postAnswer, upvoteAnswer, revokeUpvoteAnswer } from '@/api/answer';  
-  
+import { fetchQuestionById, fetchQuestionByIdDetails, deleteQuestion  } from '@/api/question';  
+import { fetchAllAnswerByQuestion, postAnswer, upvoteAnswer, revokeUpvoteAnswer, deleteAnswer } from '@/api/answer';  
+import { getUserById } from '@/api/user';
+
+const router = useRouter();  
 const route = useRoute();  
 const question = ref(null);  
 const content = ref('');  
 const userId = sessionStorage.getItem('userId');  
 const questionId = route.params.id;  
 const isLoading = ref(true); // Loading state  
+const user = ref();
 
 const isAuthenticated = ref(false)
 
@@ -119,19 +136,46 @@ onMounted(async () => {
     // question.value = await fetchQuestionById(questionId);  
     question.value = await fetchQuestionByIdDetails(questionId);  
     const answers = await fetchAllAnswerByQuestion(route.params.id);
-
+    console.log(question.value);  
+    if (isAuthenticated.value)
+    {
+      user.value = await getUserById(sessionStorage.getItem('userId'));
+    }
+    
     question.value.answers = answers.map((answer) => ({
       ...answer,
       isUpvoted: Array.isArray(answer.voters) && answer.voters.includes(userId), // Assume `voters` is a list of user IDs who upvoted
     })); 
-    console.log(question.value);  
+    question.value.answers.sort((a, b) => new Date(b.upvotes) - new Date(a.upvotes));
   } catch (error) {  
     console.error('Error fetching question:', error);  
   } finally {  
     isLoading.value = false; // Set loading to false after fetching  
   }  
+
 });  
-  
+
+const handleDeleteQuestion = async (questionId) => {  
+  try {  
+    const response = await deleteQuestion(questionId);  
+    alert('Pertanyaan berhasil dihapus!');
+    // location.reload();  
+    router.push('/')
+  } catch (error) {  
+    console.error('Pertanyaan gagal dihapus:', error);  
+  }  
+}
+
+const handleDeleteAnswer = async (answerId) => {  
+  try {  
+    const response = await deleteAnswer(answerId);  
+    alert('Jawaban berhasil dihapus!');
+    location.reload();  
+  } catch (error) {  
+    console.error('Jawaban gagal dihapus:', error);  
+  }  
+}
+
 const handleSubmitAnswer = async () => {  
   console.log('Answer submitted:', {  
     content: content.value,  
