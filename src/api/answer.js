@@ -27,6 +27,15 @@ export const fetchAllAnswer = async () => {
   }
 };
 
+export const fetchAllAnswerById = async (answerId) => {
+  try {
+    const response = await axiosInstance.get('/answer/answers/' + answerId);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
 export const fetchAllAnswerByQuestion = async (questionId) => {
   try {
     const response = await axiosInstance.get('/answer/answers/question/' + questionId);
