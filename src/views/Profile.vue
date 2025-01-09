@@ -108,9 +108,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { getUserById, updateUser } from '@/api/user'
-import { fetchQuestionByIdDetails } from '@/api/question'
+import { ref, onMounted } from 'vue';
+import { getUserById, updateUser } from '@/api/user';
+import { fetchQuestionByIdDetails } from '@/api/question';
+import { fetchAllAnswerById } from '@/api/answer';
 import NavBarComponent from '../components/NavBarComponent.vue';
 import FooterComponent from '../components/FooterComponent.vue';
 import ChartComponent from '../components/ChartComponent.vue';
@@ -180,13 +181,17 @@ const fetchUserData = async () => {
             : { action: `Ditanyakan: ${q} (Detail tidak ditemukan)`, date: new Date() };
         })
       );
+      
+      const answerWithDetails = await Promise.all(
+        user.value.answers.map(async (a) => {
+          const answerDetails = await fetchAllAnswerById(a);
+          return answerDetails
+            ? { action: `Dijawab: ${answerDetails.content}`, date: new Date() }
+            : { action: `Dijawab: ${a} (Detail tidak ditemukan)`, date: new Date() };
+        })
+      );
 
-      const answers = user.value.answers.map((a) => ({
-        action: `Dijawab: ${a}`,
-        date: new Date(),
-      }));
-
-      recentActivity.value = [...questionsWithDetails, ...answers];
+      recentActivity.value = [...questionsWithDetails, ...answerWithDetails];
   }
 
 // Contoh pemanggilan fungsi
