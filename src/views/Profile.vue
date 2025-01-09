@@ -110,6 +110,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { getUserById, updateUser } from '@/api/user'
+import { fetchQuestionByIdDetails } from '@/api/question'
 import NavBarComponent from '../components/NavBarComponent.vue';
 import FooterComponent from '../components/FooterComponent.vue';
 import ChartComponent from '../components/ChartComponent.vue';
@@ -170,11 +171,27 @@ const fetchUserData = async () => {
       reputation: user.value.reputation
     }
 
-    // Populate recent activity (example: using user's questions or answers)
-    recentActivity.value = [
-      ...user.value.questions.map(q => ({ action: `Ditanyakan: ${q}`, date: new Date() })),
-      ...user.value.answers.map(a => ({ action: `Dijawab: ${a}`, date: new Date() }))
-    ]
+    async function populateRecentActivity(user) {
+      const questionsWithDetails = await Promise.all(
+        user.value.questions.map(async (q) => {
+          const questionDetails = await fetchQuestionByIdDetails(q);
+          return questionDetails
+            ? { action: `Ditanyakan: ${questionDetails.content}`, date: new Date() }
+            : { action: `Ditanyakan: ${q} (Detail tidak ditemukan)`, date: new Date() };
+        })
+      );
+
+      const answers = user.value.answers.map((a) => ({
+        action: `Dijawab: ${a}`,
+        date: new Date(),
+      }));
+
+      recentActivity.value = [...questionsWithDetails, ...answers];
+  }
+
+// Contoh pemanggilan fungsi
+populateRecentActivity(user);
+
   } catch (error) {
     console.error('Failed to fetch user data:', error)
   }
